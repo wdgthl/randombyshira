@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+  <title>mythic race & image randomizer</title>
+  <!-- Google Fonts: eerie + elegant mix + Cyrillic support -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=Macondo+Swash+Caps&family=IM+Fell+English+SC&family=Medieaval+Sharp&family=Philosopher:ital,wght@0,400;0,700;1,400;1,700&family=EB+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      background: #0b0a0c;
+      background-image: url('bg.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'IM Fell English SC', 'Uncial Antiqua', 'Philosopher', cursive, serif;
+      position: relative;
+      overflow-x: hidden;
+      padding: 10px;
+    }
+
+    /* dark mystical overlay for readability & atmosphere */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 20% 30%, rgba(20, 10, 30, 0.7) 10%, rgba(2, 0, 8, 0.85) 90%);
+      backdrop-filter: blur(1.5px);
+      z-index: 0;
+    }
+
+    /* floating magical particles */
+    .particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba(230, 200, 255, 0.7);
+      border-radius: 50%;
+      box-shadow: 0 0 12px #c084fc, 0 0 25px #7e22ce;
+      animation: floatParticle 12s infinite ease-in-out;
+      opacity: 0;
+    }
+
+    @keyframes floatParticle {
+      0% { transform: translateY(0) translateX(0) scale(0.8); opacity: 0; }
+      10% { opacity: 0.9; }
+      90% { opacity: 0.8; }
+      100% { transform: translateY(-110vh) translateX(40px) scale(1.4); opacity: 0; }
+    }
+
+    .main-card {
+      position: relative;
+      z-index: 10;
+      width: min(92%, 700px);
+      background: rgba(18, 13, 26, 0.55);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border: 2px solid rgba(210, 180, 250, 0.35);
+      border-radius: 3.5rem 3.5rem 3rem 3rem;
+      box-shadow: 0 30px 55px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 220, 255, 0.25), inset 0 0 40px rgba(180, 130, 255, 0.3);
+      padding: 2.2rem 2rem 2.8rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: all 0.3s ease;
+      margin: 10px 0;
+    }
+
+    .main-card:hover {
+      box-shadow: 0 35px 65px rgba(0,0,0,0.8), 0 0 0 1.5px rgba(255, 210, 255, 0.5), inset 0 0 55px rgba(170, 100, 240, 0.45);
+    }
+
+    h1 {
+      font-family: 'Uncial Antiqua', 'Medieaval Sharp', 'Philosopher', cursive;
+      font-size: clamp(2rem, 8vw, 4rem);
+      color: #f7e9ff;
+      text-shadow: 0 0 18px #b57edc, 0 0 40px #4c1d7a, 3px 3px 0 #1e0b2c;
+      letter-spacing: 0.12em;
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+      filter: drop-shadow(0 8px 10px black);
+      word-break: break-word;
+    }
+
+    .subtitle {
+      font-family: 'Macondo Swash Caps', 'Philosopher', 'IM Fell English SC', cursive;
+      font-size: clamp(1rem, 4vw, 1.4rem);
+      color: #ddc3ff;
+      text-shadow: 0 0 10px #6b21a8, 0 0 25px #2e0a4e;
+      margin-bottom: 2.2rem;
+      border-bottom: 2px dashed #b68eff;
+      padding-bottom: 0.7rem;
+      width: fit-content;
+      letter-spacing: 0.1em;
+    }
+
+    .image-frame {
+      background: rgba(10, 5, 20, 0.6);
+      border: 3px ridge #c49cf0;
+      border-radius: 2.5rem;
+      padding: 0.7rem;
+      margin: 0.6rem 0 1.8rem;
+      box-shadow: 0 0 30px #562b7e, inset 0 0 20px #20083a;
+      transition: 0.3s;
+      width: 100%;
+      max-width: 450px;
+      aspect-ratio: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-image: url('bg.png');
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .image-frame::after {
+      content: "🔍";
+      position: absolute;
+      bottom: 15px;
+      right: 15px;
+      background: rgba(0,0,0,0.7);
+      color: #d7b0ff;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .image-frame:hover::after {
+      opacity: 1;
+    }
+
+    .image-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 2rem;
+      display: block;
+      transition: transform 0.4s ease, filter 0.4s;
+      filter: brightness(1.05) contrast(1.1);
+    }
+
+    .image-frame:hover img {
+      transform: scale(1.03);
+      filter: brightness(1.2) contrast(1.15) drop-shadow(0 0 12px #c084fc);
+    }
+
+    .race-display {
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid #d7b0ff;
+      border-radius: 4rem;
+      padding: 0.8rem 2rem;
+      margin: 0.7rem 0 2rem;
+      box-shadow: 0 0 28px #a552e6;
+      transition: 0.2s;
+      min-width: 200px;
+      width: fit-content;
+      max-width: 90%;
+    }
+
+    .race-text {
+      font-family: 'Macondo Swash Caps', 'Uncial Antiqua', 'Philosopher', cursive;
+      font-size: clamp(1.5rem, 6vw, 2.3rem);
+      font-weight: bold;
+      color: #f5e4ff;
+      text-shadow: 0 0 15px #e879f9, 0 0 35px #86198f, 2px 2px 0 #120021;
+      letter-spacing: 0.1em;
+      text-transform: capitalize;
+      word-break: break-word;
+      line-height: 1.3;
+    }
+
+    /* Стиль для русского названия расы */
+    .race-translation {
+      display: block;
+      font-family: 'Philosopher', 'EB Garamond', 'Macondo Swash Caps', serif;
+      font-style: italic;
+      font-size: clamp(0.9rem, 3vw, 1.2rem);
+      font-weight: 400;
+      color: #e2c6ff;
+      text-shadow: 0 0 10px #c084fc, 0 0 20px #7e22ce, 0 0 35px #4c1d7a;
+      letter-spacing: 0.08em;
+      margin-top: 0.15rem;
+      opacity: 0.9;
+      transition: all 0.3s ease;
+    }
+
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      margin: 0.3rem 0 0.8rem;
+    }
+
+    .magic-btn {
+      background: rgba(30, 15, 45, 0.7);
+      backdrop-filter: blur(8px);
+      border: 2px solid #d299ff;
+      color: #f3e5ff;
+      font-family: 'Medieaval Sharp', 'Uncial Antiqua', 'Philosopher', cursive;
+      font-size: clamp(1rem, 3.5vw, 1.4rem);
+      font-weight: bold;
+      padding: 0.8rem 1.6rem;
+      border-radius: 3rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      letter-spacing: 0.08em;
+      text-shadow: 0 0 8px black;
+      box-shadow: 0 6px 14px rgba(157, 78, 221, 0.7), inset 0 1px 8px rgba(255, 255, 255, 0.5);
+      transition: all 0.25s ease;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .magic-btn:hover {
+      background: rgba(70, 30, 100, 0.8);
+      border-color: #f0bcff;
+      box-shadow: 0 0 28px #c879ff, 0 8px 18px black;
+      transform: translateY(-3px);
+      color: white;
+    }
+
+    .magic-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 4px 10px #b44eff;
+    }
+
+    .image-counter {
+      font-family: 'IM Fell English SC', 'Philosopher', serif;
+      color: #cdb5ff;
+      background: rgba(0,0,0,0.4);
+      padding: 0.2rem 1.2rem;
+      border-radius: 2rem;
+      margin-top: 0.8rem;
+      font-size: clamp(0.8rem, 2.5vw, 1rem);
+      letter-spacing: 0.05em;
+    }
+
+    /* ---------- LIGHTBOX STYLES ---------- */
+    .lightbox-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.35s ease, visibility 0.35s ease;
+      cursor: pointer;
+      padding: 20px;
+    }
+
+    .lightbox-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .lightbox-content {
+      position: relative;
+      max-width: 95vw;
+      max-height: 95vh;
+      max-height: 95dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: zoomIn 0.35s ease;
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .lightbox-content img {
+      max-width: 100%;
+      max-height: 90vh;
+      max-height: 90dvh;
+      object-fit: contain;
+      border-radius: 1.5rem;
+      border: 3px solid rgba(210, 180, 250, 0.6);
+      box-shadow: 0 0 60px rgba(180, 100, 255, 0.5), 0 20px 50px rgba(0,0,0,0.8);
+      cursor: default;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 20px;
+      right: 25px;
+      font-size: 2.5rem;
+      color: #e2c6ff;
+      text-shadow: 0 0 20px #c084fc;
+      cursor: pointer;
+      z-index: 1001;
+      transition: transform 0.3s, color 0.3s;
+      line-height: 1;
+      background: rgba(0,0,0,0.4);
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid rgba(210, 180, 250, 0.4);
+    }
+
+    .lightbox-close:hover {
+      transform: scale(1.15);
+      color: #ffffff;
+      box-shadow: 0 0 25px #c879ff;
+    }
+
+    .lightbox-counter {
+      position: absolute;
+      bottom: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #cdb5ff;
+      font-family: 'Philosopher', serif;
+      font-size: 1rem;
+      background: rgba(0,0,0,0.6);
+      padding: 0.4rem 1.5rem;
+      border-radius: 2rem;
+      letter-spacing: 0.06em;
+      border: 1px solid rgba(210, 180, 250, 0.3);
+    }
+
+    /* Tablet adjustments */
+    @media (max-width: 768px) {
+      .main-card {
+        padding: 1.8rem 1.2rem;
+        border-radius: 2.5rem;
+      }
+      
+      .image-frame {
+        max-width: 380px;
+        border-radius: 2rem;
+        padding: 0.5rem;
+      }
+      
+      .image-frame img {
+        border-radius: 1.5rem;
+      }
+      
+      .race-display {
+        padding: 0.7rem 1.5rem;
+      }
+      
+      .lightbox-close {
+        top: 15px;
+        right: 15px;
+        width: 45px;
+        height: 45px;
+        font-size: 2rem;
+      }
+    }
+
+    /* Phone adjustments */
+    @media (max-width: 480px) {
+      body {
+        padding: 5px;
+        align-items: flex-start;
+        padding-top: 15px;
+      }
+      
+      .main-card {
+        padding: 1.5rem 0.8rem 2rem;
+        border-radius: 2rem;
+        width: 96%;
+      }
+      
+      h1 {
+        font-size: 1.8rem;
+        letter-spacing: 0.06em;
+      }
+      
+      .subtitle {
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+      }
+      
+      .image-frame {
+        max-width: 300px;
+        border-radius: 1.8rem;
+        padding: 0.4rem;
+        margin-bottom: 1.2rem;
+      }
+      
+      .image-frame img {
+        border-radius: 1.3rem;
+      }
+      
+      .image-frame::after {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+        bottom: 10px;
+        right: 10px;
+      }
+      
+      .race-display {
+        padding: 0.6rem 1.2rem;
+        margin-bottom: 1.5rem;
+      }
+      
+      .race-text {
+        font-size: 1.4rem;
+      }
+      
+      .race-translation {
+        font-size: 0.85rem;
+      }
+      
+      .button-group {
+        gap: 0.7rem;
+      }
+      
+      .magic-btn {
+        padding: 0.7rem 1.2rem;
+        font-size: 0.95rem;
+      }
+      
+      .lightbox-close {
+        top: 10px;
+        right: 10px;
+        width: 38px;
+        height: 38px;
+        font-size: 1.6rem;
+      }
+      
+      .lightbox-counter {
+        font-size: 0.8rem;
+        bottom: 15px;
+        padding: 0.3rem 1rem;
+      }
+      
+      .lightbox-content img {
+        border-radius: 1rem;
+      }
+    }
+
+    /* Very small phones */
+    @media (max-width: 360px) {
+      .main-card {
+        padding: 1.2rem 0.5rem 1.5rem;
+      }
+      
+      .image-frame {
+        max-width: 250px;
+      }
+      
+      h1 {
+        font-size: 1.5rem;
+      }
+      
+      .magic-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- animated particles for magical vibe -->
+  <div class="particles" id="particlesContainer"></div>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox-overlay" id="lightboxOverlay">
+    <span class="lightbox-close" id="lightboxClose" title="Close">✕</span>
+    <div class="lightbox-content">
+      <img id="lightboxImage" src="" alt="full size portrait">
+    </div>
+    <div class="lightbox-counter" id="lightboxCounter">✧ image 1 of 200 ✧</div>
+  </div>
+
+  <div class="main-card">
+    <h1>⚡ MYTHIC RANDOMIZER ⚡</h1>
+    <div class="subtitle">✦ fate weaves the veil ✦</div>
+
+    <!-- Image randomizer area -->
+    <div class="image-frame" id="imageFrame" title="Нажми, чтобы открыть в полном размере">
+      <img id="randomImage" src="1.jpg" alt="mystical portrait" loading="lazy">
+    </div>
+
+    <!-- Race display with Russian translation -->
+    <div class="race-display">
+      <span class="race-text" id="raceDisplay">Vampire</span>
+      <span class="race-translation" id="raceTranslation">Вампир</span>
+    </div>
+
+    <div class="button-group">
+      <button class="magic-btn" id="randomizeRaceBtn">
+        <span>🧬</span> New Race
+      </button>
+      <button class="magic-btn" id="randomizeImageBtn">
+        <span>🖼️</span> New Image
+      </button>
+    </div>
+
+    <div class="image-counter" id="imageCounter">
+      ✧ image 1 of 200 ✧
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // ---------------------------------- EXTENSIVE RACE LIST with Russian translations ----------------------------------
+      const races = [
+        { en: "Vampire", ru: "Вампир" },
+        { en: "Werewolf", ru: "Оборотень" },
+        { en: "Mermaid", ru: "Русалка" },
+        { en: "Orc", ru: "Орк" },
+        { en: "Tiefling", ru: "Тифлинг" },
+        { en: "Elf", ru: "Эльф" },
+        { en: "Dark Elf", ru: "Тёмный эльф" },
+        { en: "Fairy", ru: "Фея" },
+        { en: "Dragonborn", ru: "Драконорождённый" },
+        { en: "Kitsune", ru: "Кицунэ" },
+        { en: "Neko", ru: "Нэко" },
+        { en: "Angel", ru: "Ангел" },
+        { en: "Demon", ru: "Демон" },
+        { en: "Succubus", ru: "Суккуб" },
+        { en: "Incubus", ru: "Инкуб" },
+        { en: "Ghost", ru: "Призрак" },
+        { en: "Wraith", ru: "Дух" },
+        { en: "Lich", ru: "Лич" },
+        { en: "Goblin", ru: "Гоблин" },
+        { en: "Troll", ru: "Тролль" },
+        { en: "Ogre", ru: "Огр" },
+        { en: "Centaur", ru: "Кентавр" },
+        { en: "Satyr", ru: "Сатир" },
+        { en: "Minotaur", ru: "Минотавр" },
+        { en: "Harpy", ru: "Гарпия" },
+        { en: "Siren", ru: "Сирена" },
+        { en: "Selkie", ru: "Шелки" },
+        { en: "Nymph", ru: "Нимфа" },
+        { en: "Dryad", ru: "Дриада" },
+        { en: "Treant", ru: "Энт" },
+        { en: "Gnome", ru: "Гном" },
+        { en: "Halfling", ru: "Полурослик" },
+        { en: "Dwarf", ru: "Дварф" },
+        { en: "Goliath", ru: "Голиаф" },
+        { en: "Aasimar", ru: "Аасимар" },
+        { en: "Fallen Aasimar", ru: "Падший аасимар" },
+        { en: "Kenku", ru: "Кэнку" },
+        { en: "Tabaxi", ru: "Табакси" },
+        { en: "Leonin", ru: "Леонин" },
+        { en: "Aarakocra", ru: "Ааракокра" },
+        { en: "Owlin", ru: "Совлин" },
+        { en: "Tortle", ru: "Тортл" },
+        { en: "Lizardfolk", ru: "Ящеролюд" },
+        { en: "Kobold", ru: "Кобольд" },
+        { en: "Yuan-ti", ru: "Юань-ти" },
+        { en: "Dhampir", ru: "Дампир" },
+        { en: "Reborn", ru: "Перерождённый" },
+        { en: "Hexblood", ru: "Ведьмовская кровь" },
+        { en: "Changeling", ru: "Подменыш" },
+        { en: "Doppelganger", ru: "Доппельгангер" },
+        { en: "Shifter", ru: "Оборотень-зверь" },
+        { en: "Wererat", ru: "Крыса-оборотень" },
+        { en: "Werebear", ru: "Медведь-оборотень" },
+        { en: "Wereboar", ru: "Вепрь-оборотень" },
+        { en: "Elemental", ru: "Элементаль" },
+        { en: "Ifrit", ru: "Ифрит" },
+        { en: "Djinn", ru: "Джинн" },
+        { en: "Undine", ru: "Ундина" },
+        { en: "Sylph", ru: "Сильф" },
+        { en: "Gnoll", ru: "Гнолл" },
+        { en: "Bugbear", ru: "Багбир" },
+        { en: "Hobgoblin", ru: "Хобгоблин" },
+        { en: "Firbolg", ru: "Фирболг" },
+        { en: "Triton", ru: "Тритон" },
+        { en: "Merfolk", ru: "Мерфолк" },
+        { en: "Deep One", ru: "Глубинный" },
+        { en: "Kappa", ru: "Каппа" },
+        { en: "Oni", ru: "Они" },
+        { en: "Tengu", ru: "Тэнгу" },
+        { en: "Bakeneko", ru: "Бакэнэко" },
+        { en: "Jorogumo", ru: "Дзёрогумо" },
+        { en: "Naga", ru: "Нага" },
+        { en: "Rakshasa", ru: "Ракшас" },
+        { en: "Deva", ru: "Дэва" },
+        { en: "Archon", ru: "Архонт" },
+        { en: "Fomorian", ru: "Фомор" },
+        { en: "Cyclops", ru: "Циклоп" },
+        { en: "Gorgon", ru: "Горгона" },
+        { en: "Medusa", ru: "Медуза" },
+        { en: "Pixie", ru: "Пикси" },
+        { en: "Sprite", ru: "Спрайт" },
+        { en: "Banshee", ru: "Банши" },
+        { en: "Phantom", ru: "Фантом" },
+        { en: "Shadow", ru: "Тень" },
+        { en: "Wendigo", ru: "Вендиго" },
+        { en: "Skinwalker", ru: "Скинуокер" },
+        { en: "Chimera", ru: "Химера" },
+        { en: "Manticore", ru: "Мантикора" },
+        { en: "Griffin", ru: "Грифон" },
+        { en: "Hippogriff", ru: "Гиппогриф" },
+        { en: "Pegasus", ru: "Пегас" },
+        { en: "Unicorn", ru: "Единорог" },
+        { en: "Nightmare", ru: "Кошмар" },
+        { en: "Kelpie", ru: "Келпи" },
+        { en: "Pooka", ru: "Пука" },
+        { en: "Redcap", ru: "Красный колпак" },
+        { en: "Brownie", ru: "Брауни" },
+        { en: "Leprechaun", ru: "Лепрекон" },
+        { en: "Faun", ru: "Фавн" },
+        { en: "Drider", ru: "Драйдер" },
+        { en: "Mindflayer", ru: "Свежеватель разума" },
+        { en: "Beholder", ru: "Бехолдер" },
+        { en: "Illithid", ru: "Иллитид" },
+        { en: "Githyanki", ru: "Гитьянки" },
+        { en: "Githzerai", ru: "Гитзерай" },
+        { en: "Thri-kreen", ru: "Три-крин" },
+        { en: "Warforged", ru: "Варфорджед" },
+        { en: "Autognome", ru: "Автогном" },
+        { en: "Vedalken", ru: "Ведалкен" },
+        { en: "Simic Hybrid", ru: "Симик-гибрид" },
+        { en: "Loxodon", ru: "Локсодон" },
+        { en: "Aven", ru: "Авен" },
+        { en: "Kor", ru: "Кор" },
+        { en: "Zombie", ru: "Зомби" },
+        { en: "Skeleton", ru: "Скелет" },
+        { en: "Mummy", ru: "Мумия" },
+        { en: "Ghoul", ru: "Гуль" },
+        { en: "Wight", ru: "Умертвие" },
+        { en: "Specter", ru: "Спектр" },
+        { en: "Revenant", ru: "Ревенант" },
+        { en: "Poltergeist", ru: "Полтергейст" },
+        { en: "Bogle", ru: "Богл" },
+        { en: "Gremlin", ru: "Гремлин" },
+        { en: "Imp", ru: "Бес" },
+        { en: "Quasit", ru: "Квазит" },
+        { en: "Hellhound", ru: "Адская гончая" },
+        { en: "Cerberus", ru: "Цербер" },
+        { en: "Phoenix", ru: "Феникс" },
+        { en: "Thunderbird", ru: "Громовая птица" },
+        { en: "Basilisk", ru: "Василиск" },
+        { en: "Cockatrice", ru: "Кокатрис" },
+        { en: "Wyvern", ru: "Виверна" },
+        { en: "Drake", ru: "Дрейк" },
+        { en: "Fae Dragon", ru: "Волшебный дракон" },
+        { en: "Eldritch Horror", ru: "Древний ужас" }
+      ];
+
+      // ------------------------------ IMAGE CONFIGURATION ------------------------------
+      const TOTAL_IMAGES = 200;
+      const IMAGE_EXTENSION = "jpg";
+
+      // DOM elements
+      const raceDisplayEl = document.getElementById('raceDisplay');
+      const raceTranslationEl = document.getElementById('raceTranslation');
+      const randomImageEl = document.getElementById('randomImage');
+      const imageCounterEl = document.getElementById('imageCounter');
+      const randomizeRaceBtn = document.getElementById('randomizeRaceBtn');
+      const randomizeImageBtn = document.getElementById('randomizeImageBtn');
+      const imageFrame = document.getElementById('imageFrame');
+      
+      // Lightbox elements
+      const lightboxOverlay = document.getElementById('lightboxOverlay');
+      const lightboxImage = document.getElementById('lightboxImage');
+      const lightboxClose = document.getElementById('lightboxClose');
+      const lightboxCounter = document.getElementById('lightboxCounter');
+
+      let currentImageIndex = 1;
+
+      // ---------- LIGHTBOX FUNCTIONS ----------
+      function openLightbox() {
+        lightboxImage.src = randomImageEl.src;
+        lightboxCounter.textContent = `✧ image ${currentImageIndex} of ${TOTAL_IMAGES} ✧`;
+        lightboxOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeLightbox() {
+        lightboxOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+
+      // ---------- RACE FUNCTIONS ----------
+      function getRandomRace() {
+        const randomIndex = Math.floor(Math.random() * races.length);
+        return races[randomIndex];
+      }
+
+      function updateRaceDisplay(raceObj) {
+        raceDisplayEl.textContent = raceObj.en;
+        raceTranslationEl.textContent = raceObj.ru;
+        
+        // pulse animation
+        raceDisplayEl.style.transform = 'scale(1.08)';
+        raceDisplayEl.style.transition = 'transform 0.15s ease';
+        raceTranslationEl.style.transform = 'scale(1.05)';
+        raceTranslationEl.style.transition = 'transform 0.2s ease';
+        
+        setTimeout(() => {
+          raceDisplayEl.style.transform = 'scale(1)';
+          raceTranslationEl.style.transform = 'scale(1)';
+        }, 200);
+      }
+
+      // ---------- IMAGE FUNCTIONS ----------
+      function getRandomImageIndex() {
+        return Math.floor(Math.random() * TOTAL_IMAGES) + 1;
+      }
+
+      function updateImageSource(index) {
+        const imagePath = `${index}.${IMAGE_EXTENSION}`;
+        randomImageEl.src = imagePath;
+        randomImageEl.alt = `mystical portrait ${index}`;
+        imageCounterEl.textContent = `✧ image ${index} of ${TOTAL_IMAGES} ✧`;
+        currentImageIndex = index;
+
+        // glimmer effect on frame
+        imageFrame.style.transition = 'box-shadow 0.2s';
+        imageFrame.style.boxShadow = '0 0 45px #c879ff, inset 0 0 35px #4c1d7a';
+        setTimeout(() => {
+          imageFrame.style.boxShadow = '0 0 30px #562b7e, inset 0 0 20px #20083a';
+        }, 250);
+      }
+
+      function randomizeRace() {
+        const newRace = getRandomRace();
+        updateRaceDisplay(newRace);
+      }
+
+      function randomizeImage() {
+        let newIndex = getRandomImageIndex();
+        if (TOTAL_IMAGES > 1) {
+          while (newIndex === currentImageIndex) {
+            newIndex = getRandomImageIndex();
+          }
+        }
+        updateImageSource(newIndex);
+      }
+
+      // ---------- INITIALIZATION ----------
+      function initializeRandomizer() {
+        const initialRace = getRandomRace();
+        raceDisplayEl.textContent = initialRace.en;
+        raceTranslationEl.textContent = initialRace.ru;
+
+        const randomStartIndex = getRandomImageIndex();
+        updateImageSource(randomStartIndex);
+      }
+
+      // ---------- EVENT LISTENERS ----------
+      randomizeRaceBtn.addEventListener('click', randomizeRace);
+      randomizeImageBtn.addEventListener('click', randomizeImage);
+
+      // Click on image frame: open lightbox
+      imageFrame.addEventListener('click', (e) => {
+        // Only open lightbox if clicking on image or frame
+        if (e.target === imageFrame || e.target === randomImageEl) {
+          openLightbox();
+        }
+      });
+
+      // Lightbox close events
+      lightboxClose.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeLightbox();
+      });
+
+      lightboxOverlay.addEventListener('click', (e) => {
+        // Close if clicking on overlay background (not on image)
+        if (e.target === lightboxOverlay) {
+          closeLightbox();
+        }
+      });
+
+      // Keyboard: ESC to close lightbox
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && lightboxOverlay.classList.contains('active')) {
+          closeLightbox();
+        }
+      });
+
+      // Touch swipe down to close on mobile
+      let touchStartY = 0;
+      lightboxOverlay.addEventListener('touchstart', (e) => {
+        touchStartY = e.touches[0].clientY;
+      });
+
+      lightboxOverlay.addEventListener('touchend', (e) => {
+        const touchEndY = e.changedTouches[0].clientY;
+        const diff = touchEndY - touchStartY;
+        if (diff > 80) {
+          closeLightbox();
+        }
+      });
+
+      // Prevent image drag on mobile
+      lightboxImage.addEventListener('dragstart', (e) => e.preventDefault());
+
+      initializeRandomizer();
+
+      // -------------------- FLOATING PARTICLES --------------------
+      function createParticles() {
+        const container = document.getElementById('particlesContainer');
+        if (!container) return;
+        const particleCount = 35;
+        for (let i = 0; i < particleCount; i++) {
+          const particle = document.createElement('div');
+          particle.className = 'particle';
+          const left = Math.random() * 100;
+          const bottomStart = Math.random() * 100;
+          const size = Math.random() * 6 + 2;
+          const duration = Math.random() * 15 + 12;
+          const delay = Math.random() * 10;
+          
+          particle.style.left = `${left}%`;
+          particle.style.bottom = `${bottomStart}%`;
+          particle.style.width = `${size}px`;
+          particle.style.height = `${size}px`;
+          particle.style.animationDuration = `${duration}s`;
+          particle.style.animationDelay = `${delay}s`;
+          particle.style.background = `rgba(${200 + Math.floor(Math.random()*55)}, ${170 + Math.floor(Math.random()*60)}, 255, 0.8)`;
+          particle.style.boxShadow = `0 0 ${size*3}px #c084fc, 0 0 ${size*6}px #7e22ce`;
+          
+          container.appendChild(particle);
+        }
+      }
+
+      createParticles();
+
+      // ---------- IMAGE ERROR HANDLING ----------
+      randomImageEl.addEventListener('error', function() {
+        if (currentImageIndex !== 1) {
+          randomImageEl.src = `1.${IMAGE_EXTENSION}`;
+          imageCounterEl.textContent = `✧ image 1 (fallback) ✧`;
+          currentImageIndex = 1;
+        } else {
+          randomImageEl.src = 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\'%3E%3Crect width=\'200\' height=\'200\' fill=\'%231b0b2e\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23d8b4fe\' font-size=\'18\' font-family=\'serif\'%3EImage not found%3C/text%3E%3C/svg%3E';
+          imageCounterEl.textContent = '✧ image missing ✧';
+        }
+      });
+
+      // Also handle lightbox image error
+      lightboxImage.addEventListener('error', function() {
+        lightboxImage.src = randomImageEl.src;
+      });
+
+    })();
+  </script>
+</body>
+</html>
